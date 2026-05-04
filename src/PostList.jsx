@@ -8,14 +8,12 @@ function PostList() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(
-          "https://jsonplaceholder.typicode.com/posts"
-        );
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error(`Request failed with status ${response.status}`);
         }
         const data = await response.json();
-        setPosts(data);
+        setPosts(data.slice(0, 5));
       } catch (error) {
         setError(error.message);
       } finally {
@@ -25,16 +23,12 @@ function PostList() {
     fetchPosts();
   }, []);
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <ul>
-      {posts.map((post) => (
+      {posts.map(post => (
         <li key={post.id}>
           <h3>{post.title}</h3>
           <p>{post.body}</p>
